@@ -1,3 +1,11 @@
+drivers/fingerprint/.et320-spi.o.cmd
+drivers/fingerprint/.et320-spi_data_transfer.o.cmd
+drivers/fingerprint/et320-spi.o
+drivers/fingerprint/et320-spi_data_transfer.o
+drivers/staging/samsung/.sec_hotplug.o.cmd
+drivers/staging/samsung/sec_hotplug.o
+drivers/video/fbdev/exynos/decon_8890/panels/.dimming_core.o.cmd
+drivers/video/fbdev/exynos/decon_8890/panels/dimming_core.o
 cmd_flags
 include/config/
 include/generated/
