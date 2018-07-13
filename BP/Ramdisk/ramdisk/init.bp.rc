@@ -1,0 +1,22 @@
+# Copyright (C) 2012 The Android Open Source Project
+#
+# IMPORTANT: Do not create world writable files or directories.
+# This is a common source of Android security bugs.
+#
+# BlackPearl 2018
+#
+
+on property:sys.boot_completed=1
+start wakelock
+	
+	
+service wakelock /sbin/wakelock.sh
+    class late_start
+    user root
+    seclabel u:r:init:s0
+    oneshot
+    disabled	
+	
+on late-fs
+   # boot time fs tune
+   stop secure_storage
