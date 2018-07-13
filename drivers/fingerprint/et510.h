@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Samsung Electronics. All rights reserved.
+ * Copyright (C) 2016 Samsung Electronics. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,15 +16,15 @@
  * 02110-1301 USA
  */
 
-#ifndef _ET320_LINUX_DIRVER_H_
-#define _ET320_LINUX_DIRVER_H_
+#ifndef _ET510_LINUX_DIRVER_H_
+#define _ET510_LINUX_DIRVER_H_
 
 #include <linux/module.h>
 #include <linux/spi/spi.h>
 
 #include <linux/platform_data/spi-s3c64xx.h>
-#ifdef ENABLE_SENSORS_FPRINT_SECURE
 #include <linux/wakelock.h>
+#ifdef ENABLE_SENSORS_FPRINT_SECURE
 #include <linux/clk.h>
 #include <linux/pm_runtime.h>
 #include <linux/spi/spidev.h>
@@ -34,7 +34,8 @@
 #include <linux/amba/bus.h>
 #include <linux/amba/pl330.h>
 #if defined(CONFIG_SECURE_OS_BOOSTER_API)
-#if defined(CONFIG_SOC_EXYNOS8890)
+#if defined(CONFIG_SOC_EXYNOS8890) || defined(CONFIG_SOC_EXYNOS7870) \
+	|| defined(CONFIG_SOC_EXYNOS7880) || defined(CONFIG_SOC_EXYNOS7570)
 #include <soc/samsung/secos_booster.h>
 #else
 #include <mach/secos_booster.h>
@@ -47,41 +48,45 @@ struct sec_spi_info {
 };
 #endif
 
-/*#define ET320_SPI_DEBUG*/
+/*#define ET510_SPI_DEBUG*/
 
-#ifdef ET320_SPI_DEBUG
+#ifdef ET510_SPI_DEBUG
 #define DEBUG_PRINT(fmt, args...) pr_err(fmt, ## args)
 #else
 #define DEBUG_PRINT(fmt, args...)
 #endif
 
 #define VENDOR						"EGISTEC"
-#define CHIP_ID						"ET320"
+#define CHIP_ID						"ET510"
 
 /* assigned */
-#define ET320_MAJOR					153
+#define ET510_MAJOR					153
 /* ... up to 256 */
 #define N_SPI_MINORS					32
 
-#define ET320_ADDRESS_0					0x00
-#define ET320_WRITE_ADDRESS				0xAC
-#define ET320_READ_DATA					0xAF
-#define ET320_WRITE_DATA				0xAE
-#define FP_EEPROM_WREN_OP				0x06
-#define FP_EEPROM_WRDI_OP				0x04
-#define FP_EEPROM_RDSR_OP				0x05
-#define FP_EEPROM_WRSR_OP				0x01
-#define FP_EEPROM_READ_OP				0x03
-#define FP_EEPROM_WRITE_OP				0x02
+#define OP_REG_R						0x20
+#define OP_REG_R_C						0x22
+#define OP_REG_R_C_BW					0x23
+#define OP_REG_W						0x24
+#define OP_REG_W_C						0x26
+#define OP_REG_W_C_BW					0x27
+#define OP_NVM_ON_R						0x40
+#define OP_NVM_ON_W						0x42
+#define OP_NVM_RE						0x44
+#define OP_NVM_WE						0x46
+#define OP_NVM_OFF						0x48
+#define OP_IMG_R						0x50
+#define OP_VDM_R						0x60
+#define OP_VDM_W						0x62
 #define BITS_PER_WORD					8
 
-#define SLOW_BAUD_RATE					16000000
+#define SLOW_BAUD_RATE					12500000
 
 #define DRDY_IRQ_ENABLE					1
 #define DRDY_IRQ_DISABLE				0
 
-#define ET320_INT_DETECTION_PERIOD			10
-#define ET320_DETECTION_THRESHOLD			10
+#define ET510_INT_DETECTION_PERIOD			10
+#define ET510_DETECTION_THRESHOLD			10
 
 #define FP_REGISTER_READ				0x01
 #define FP_REGISTER_WRITE				0x02
@@ -90,6 +95,18 @@ struct sec_spi_info {
 #define FP_POWER_CONTROL				0x05
 #define FP_SET_SPI_CLOCK				0x06
 #define FP_RESET_SET					0x07
+#define FP_REGISTER_BREAD				0x20
+#define FP_REGISTER_BWRITE				0x21
+#define FP_REGISTER_MREAD				0x22
+#define FP_REGISTER_MWRITE				0x23
+#define FP_REGISTER_BREAD_BACKWARD		0x24
+#define FP_REGISTER_BWRITE_BACKWARD		0x25
+#define FP_VDM_READ						0x30
+#define FP_VDM_WRITE					0x31
+#define FP_NVM_READ						0X40
+#define FP_NVM_WRITE					0x41
+#define FP_NVM_OFF						0x42
+#define FP_NVM_WRITEEX					0x43
 
 #ifdef ENABLE_SENSORS_FPRINT_SECURE
 #define FP_DIABLE_SPI_CLOCK				0x10
@@ -99,13 +116,8 @@ struct sec_spi_info {
 #define FP_SET_LOCKSCREEN				0x16
 #define FP_SET_WAKE_UP_SIGNAL				0x17
 #endif
-
-#define FP_EEPROM_WREN					0x90
-#define FP_EEPROM_WRDI					0x91
-#define FP_EEPROM_RDSR					0x92
-#define FP_EEPROM_WRSR					0x93
-#define FP_EEPROM_READ					0x94
-#define FP_EEPROM_WRITE					0x95
+#define FP_POWER_CONTROL_ET510				0x18
+#define FP_IOCTL_RESERVED_01				0x19
 
 /* trigger signal initial routine */
 #define INT_TRIGGER_INIT				0xa4
@@ -118,13 +130,17 @@ struct sec_spi_info {
 /* polling abort */
 #define INT_TRIGGER_ABORT				0xa8
 /* Sensor Registers */
-#define FDATA_ET320_ADDR				0x00
-#define FSTATUS_ET320_ADDR				0x01
+#define FDATA_ET510_ADDR				0x00
+#define FSTATUS_ET510_ADDR				0x01
 /* Detect Define */
 #define FRAME_READY_MASK				0x01
 
-#define SHIFT_BYTE_OF_IMAGE 3
+#define SHIFT_BYTE_OF_IMAGE 0
 #define DIVISION_OF_IMAGE 4
+#define LARGE_SPI_TRANSFER_BUFFER	64
+#define MAX_NVM_LEN 32 * 2 /* NVM length in bytes (32 * 16 bits internally)*/
+#define NVM_WRITE_LENGTH 4096
+#define DETECT_ADM 1
 
 struct egis_ioc_transfer {
 	u8 *tx_buf;
@@ -173,18 +189,21 @@ struct etspi_data {
 	/* buffer is NULL unless this device is open (users > 0) */
 	struct mutex buf_lock;
 	unsigned users;
-	u8 *buffer;
-	unsigned int ocp_en;	/* ocp enable GPIO pin number */
+	u8 *buf;/* tx buffer for sensor register read/write */
+	unsigned bufsiz; /* MAX size of tx and rx buffer */
 	unsigned int drdyPin;	/* DRDY GPIO pin number */
 	unsigned int sleepPin;	/* Sleep GPIO pin number */
 	unsigned int ldo_pin;	/* Ldo GPIO pin number */
-	unsigned int ldo_pin2;	/* Ldo2 GPIO pin number */
 #ifndef ENABLE_SENSORS_FPRINT_SECURE
 #ifdef CONFIG_SOC_EXYNOS8890
 	/* set cs pin in fp driver, use only Exynos8890 */
 	/* for use auto cs mode with dualization fp sensor */
 	unsigned int cs_gpio;
 #endif
+	struct pinctrl *p;
+	struct pinctrl_state *pins_poweron;
+	struct pinctrl_state *pins_poweroff;
+	unsigned int ldocontrol;
 #endif
 	unsigned int spi_cs;	/* spi cs pin <temporary gpio setting> */
 
@@ -202,43 +221,34 @@ struct etspi_data {
 #ifdef ENABLE_SENSORS_FPRINT_SECURE
 	bool enabled_clk;
 	struct wake_lock fp_spi_lock;
-	struct task_struct *t;
-	int user_pid;
-	int signal_id;
 #endif
+	struct wake_lock fp_signal_lock;
 	bool tz_mode;
 	int detect_period;
 	int detect_threshold;
 	bool finger_on;
 };
 
-#ifdef ENABLE_SENSORS_FPRINT_SECURE
-/*
- * Used by IOCTL command:
- *         ETSPI_IOCTL_REGISTER_LOCK_SCREEN_WAKE_UP_SIGNAL
- *
- * @user_pid:Process ID to which SPI driver sends signal indicating that LOCK SCREEN
- *			is asserted
- * @signal_id:signal_id
-*/
-struct etspi_ioctl_register_signal {
-	int user_pid;
-	int signal_id;
-};
-#endif
-
+int etspi_io_burst_read_register(struct etspi_data *etspi,
+		struct egis_ioc_transfer *ioc);
+int etspi_io_burst_read_register_backward(struct etspi_data *etspi,
+		struct egis_ioc_transfer *ioc);
+int etspi_io_burst_write_register(struct etspi_data *etspi, 
+		struct egis_ioc_transfer *ioc);
+int etspi_io_burst_write_register_backward(struct etspi_data *etspi,
+		struct egis_ioc_transfer *ioc);
 int etspi_io_read_register(struct etspi_data *etspi, u8 *addr, u8 *buf);
+int etspi_io_read_registerex(struct etspi_data *etspi, u8 *addr, u8 *buf, u32 len);
 int etspi_io_write_register(struct etspi_data *etspi, u8 *buf);
-int etspi_io_get_one_image(struct etspi_data *etspi, u8 *buf, u8 *image_buf);
 int etspi_read_register(struct etspi_data *etspi, u8 addr, u8 *buf);
-int etspi_mass_read(struct etspi_data *etspi, u8 addr, u8 *buf, int read_len);
-int etspi_eeprom_wren(struct etspi_data *etspi);
-int etspi_eeprom_wrdi(struct etspi_data *etspi);
-int etspi_eeprom_rdsr(struct etspi_data *etspi, u8 *buf);
-int etspi_eeprom_wrsr(struct etspi_data *etspi, u8 *buf);
-int etspi_eeprom_read(struct etspi_data *etspi,
-		u8 *addr, u8 *buf, int read_len);
-int etspi_eeprom_write(struct etspi_data *etspi, u8 *buf, int write_len);
+int etspi_write_register(struct etspi_data *etspi, u8 addr, u8 buf);
+int etspi_io_nvm_read(struct etspi_data *etspi, struct egis_ioc_transfer *ioc);
+int etspi_io_nvm_write(struct etspi_data *etspi, struct egis_ioc_transfer *ioc);
+int etspi_io_nvm_writeex(struct etspi_data *etspi, struct egis_ioc_transfer *ioc);
+int etspi_io_nvm_off(struct etspi_data *etspi, struct egis_ioc_transfer *ioc);
+int etspi_io_vdm_read(struct etspi_data *etspi, struct egis_ioc_transfer *ioc);
+int etspi_io_vdm_write(struct etspi_data *etspi, struct egis_ioc_transfer *ioc);
+int etspi_io_get_frame(struct etspi_data *etspi, u8 *frame, u32 size);
 
 extern int fingerprint_register(struct device *dev, void *drvdata,
 	struct device_attribute *attributes[], char *name);
