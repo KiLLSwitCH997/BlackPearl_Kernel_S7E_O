@@ -142,7 +142,6 @@ static unsigned char *get_gamma_from_index(struct dsim_device *dsim, int index)
 {
 	struct panel_private *panel = &dsim->priv;
 	struct SmtDimInfo *dimming_info = (struct SmtDimInfo *)panel->dim_info;
-
 #ifdef CONFIG_PANEL_SMART_DIMMING
 	struct SmtDimInfo *smart_dimming_info = (struct SmtDimInfo *)panel->smart_dim_info;
 
@@ -165,7 +164,6 @@ static unsigned char *get_gamma_from_index(struct dsim_device *dsim, int index)
 		return (unsigned char *)smart_dimming_info[index].gamma;
 	else
 #endif
-
 	return (unsigned char *)dimming_info[index].gamma;
 
 get_gamma_err:
@@ -199,7 +197,7 @@ static unsigned char *get_elvss_from_index(struct dsim_device *dsim, int index, 
 #endif
 		return (unsigned char *)dimming_info[index].elvCaps;
 	else
-ifdef CONFIG_PANEL_SMART_DIMMING
+#ifdef CONFIG_PANEL_SMART_DIMMING
 		if (panel->smart_on)
 			return (unsigned char *)smart_dimming_info[index].elv;
 		else
@@ -421,7 +419,6 @@ static int low_level_set_brightness(struct dsim_device *dsim ,int force)
 		dsim_write_hl_data(dsim, S6E3HF4_SEQ_AOR_CONTROL, ARRAY_SIZE(S6E3HF4_SEQ_AOR_CONTROL));
 	else
 #endif
-
 	dsim_panel_aid_ctrl(dsim);
 
 	dsim_panel_set_elvss(dsim);
@@ -431,7 +428,6 @@ static int low_level_set_brightness(struct dsim_device *dsim ,int force)
 		dsim_write_hl_data(dsim, S6E3HF4_SEQ_VINT_SET, ARRAY_SIZE(S6E3HF4_SEQ_VINT_SET));
 	else
 #endif
-
 	dsim_panel_set_vint(dsim, force);
 
 	dsim_panel_irc_ctrl(dsim);
