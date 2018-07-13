@@ -49,7 +49,9 @@ on init
     symlink /sys/kernel/debug /d
 
     # Link /vendor to /system/vendor for devices without a vendor partition.
+    symlink /system/odm /odm
     symlink /system/vendor /vendor
+
 
     # Mount cgroup mount point for cpu accounting
     mount cgroup none /acct cpuacct
